@@ -1,4 +1,5 @@
 import datetime
+import logging
 import ssl
 import time
 import requests
@@ -8,16 +9,14 @@ from email.message import EmailMessage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-
-
 success_sended = False
 
-bike_url = "https://www.canyon.com/de-de/gravel-bikes/bike-packing/grizl/cf-sl/grizl-cf-sl-7-throwback/3107.html?dwvar_3107_pv_rahmenfarbe=R095_P05&dwvar_3107_pv_rahmengroesse=L"
-bike_size = "L"
+bike_url = "https://www.canyon.com/de-de/gravel-bikes/bike-packing/grizl/al/grizl-7/2709.html?dwvar_2709_pv_rahmenfarbe=GN"
+bike_size = "S"
 
 email_sender = "gravelbikechecker@googlemail.com"
 email_password = "bcktpcupbyrexsui"
-email_reciever = "florian.boldrick@googlemail.com"
+email_reciever = ["florian.boldrick@googlemail.com"]
 
 email_subject = "Dein Fahrrad ist jetzt verfügbar"
 email_body = f"""
@@ -33,8 +32,8 @@ Dein Gravel Bike Checker
 
 """
 
-def check_website(url, size):
 
+def check_website(url, size):
     response = requests.get(url)
 
     if response.status_code == 200:
@@ -44,33 +43,38 @@ def check_website(url, size):
         if len(elements) == 1:
             div = elements.pop()
             availability = div.find(class_='productConfiguration__availabilityMessage')
-            check_availability(availability)
+            return check_availability(availability)
         else:
-            print("Found to many HTML Elements")
+            logging.info("Found to many HTML Elements")
+            return False
 
     else:
-        print("Error occured while resolving URL")
+        logging.info("Error occured while resolving URL")
+        return False
 
 
 def check_availability(element):
     if element is not None:
         if 'Bald verfügbar' in element.get_text():
-            print("Bike is 'Bald verfügbar'")
+            logging.info("Bike is 'Bald verfügbar'")
+            return False
         if 'Ausverkauft' in element.get_text():
-            print("Bike is 'Ausverkauft'")
+            logging.info("Bike is 'Ausverkauft'")
+            return False
         if 'Niedriger Bestand' in element.get_text():
-            print("Bike is 'Niedriger Bestand'")
-            send_mail('Niedriger Bestand')
+            logging.info("Bike is 'Niedriger Bestand'")
+            return send_mail('Niedriger Bestand')
         if 'Auf Lager' in element.get_text():
-            print("Bike is 'Auf Lager'")
-            send_mail('Auf Lager')
+            logging.info("Bike is 'Auf Lager'")
+            return send_mail('Auf Lager')
     else:
-        print('No Information about the Availability of that Bike')
+        logging.info('No Information about the Availability of that Bike')
+
 
 def send_mail(status):
     em = EmailMessage()
     em['From'] = email_sender
-    em['To'] = email_reciever
+    em['To'] = ", ".join(email_reciever)
     em['Subject'] = email_subject
     em.set_content(email_body.format(bike_url))
 
@@ -79,15 +83,15 @@ def send_mail(status):
     with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=ssl_default_contect) as smtp:
         smtp.login(email_sender, email_password)
         smtp.sendmail(email_sender, email_reciever, em.as_string())
+        return True
 
 
 if __name__ == '__main__':
     while True:
         if success_sended:
-            print("Benachritigung wurde versendet | Exit")
+            logging.info("Benachritigung wurde versendet | Exit")
             break
         else:
-            print("Überprüfe Website")
-            check_website(bike_url, bike_size)
-        time.sleep(600)
-
+            logging.info("Überprüfe Website")
+            success_sended = check_website(bike_url, bike_size)
+        time.sleep(60)
