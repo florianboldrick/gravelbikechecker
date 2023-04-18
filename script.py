@@ -17,7 +17,7 @@ bike_size = "S"
 
 email_sender = "gravelbikechecker@googlemail.com"
 email_password = "bcktpcupbyrexsui"
-email_reciever = ["isi-bo@t-online.de", "florian.boldrick@googlemail.com"]
+email_reciever = ["boldrick.isabel@gmail.com", "florian.boldrick@googlemail.com"]
 
 email_subject = "Dein Fahrrad ist jetzt verfügbar"
 email_body = f"""
