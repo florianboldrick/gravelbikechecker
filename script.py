@@ -12,15 +12,18 @@ from email.mime.text import MIMEText
 success_sended = False
 
 bike_url = "https://www.canyon.com/de-de/gravel-bikes/bike-packing/grizl/al/grizl-7/2709.html?dwvar_2709_pv_rahmenfarbe=GN"
+# bike_url = "https://www.canyon.com/de-de/gravel-bikes/bike-packing/grizl/cf-sl/grizl-cf-sl-7-throwback/3107.html?dwvar_3107_pv_rahmenfarbe=R095_P05&dwvar_3107_pv_rahmengroesse=L"
 bike_size = "S"
 
 email_sender = "gravelbikechecker@googlemail.com"
 email_password = "bcktpcupbyrexsui"
-email_reciever = ["florian.boldrick@googlemail.com"]
+email_reciever = ["isi-bo@t-online.de", "florian.boldrick@googlemail.com"]
 
 email_subject = "Dein Fahrrad ist jetzt verfügbar"
 email_body = f"""
 Hi Isabel, 
+
+dies ist die Testemail
 
 dein gewünschtes Fahrrad 'Canyon GRIZL 7 AL' ist jetzt verfügbar.
 Sei schnell und schnapp es dir.
@@ -45,30 +48,30 @@ def check_website(url, size):
             availability = div.find(class_='productConfiguration__availabilityMessage')
             return check_availability(availability)
         else:
-            logging.info("Found to many HTML Elements")
+            print("Found to many HTML Elements")
             return False
 
     else:
-        logging.info("Error occured while resolving URL")
+        print("Error occured while resolving URL")
         return False
 
 
 def check_availability(element):
     if element is not None:
         if 'Bald verfügbar' in element.get_text():
-            logging.info("Bike is 'Bald verfügbar'")
+            print("Bike is 'Bald verfügbar'")
             return False
         if 'Ausverkauft' in element.get_text():
-            logging.info("Bike is 'Ausverkauft'")
+            print("Bike is 'Ausverkauft'")
             return False
         if 'Niedriger Bestand' in element.get_text():
-            logging.info("Bike is 'Niedriger Bestand'")
+            print("Bike is 'Niedriger Bestand'")
             return send_mail('Niedriger Bestand')
         if 'Auf Lager' in element.get_text():
-            logging.info("Bike is 'Auf Lager'")
+            print("Bike is 'Auf Lager'")
             return send_mail('Auf Lager')
     else:
-        logging.info('No Information about the Availability of that Bike')
+        print('No Information about the Availability of that Bike')
 
 
 def send_mail(status):
@@ -89,9 +92,9 @@ def send_mail(status):
 if __name__ == '__main__':
     while True:
         if success_sended:
-            logging.info("Benachritigung wurde versendet | Exit")
-            break
+            print("Benachritigung wurde versendet | Exit")
+            exit(0)
         else:
-            logging.info("Überprüfe Website")
-            check_website(bike_url, bike_size)
+            print("Überprüfe Website")
+            success_sended = check_website(bike_url, bike_size)
         time.sleep(60)
