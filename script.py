@@ -93,5 +93,5 @@ if __name__ == '__main__':
             break
         else:
             logging.info("Überprüfe Website")
-            success_sended = check_website(bike_url, bike_size)
+            check_website(bike_url, bike_size)
         time.sleep(60)
