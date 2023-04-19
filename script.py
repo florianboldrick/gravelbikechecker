@@ -21,9 +21,7 @@ email_reciever = ["boldrick.isabel@gmail.com", "florian.boldrick@googlemail.com"
 
 email_subject = "Dein Fahrrad ist jetzt verfügbar"
 email_body = f"""
-Hi Isabel, 
-
-dies ist die Testemail
+Hi Isabel,
 
 dein gewünschtes Fahrrad 'Canyon GRIZL 7 AL' ist jetzt verfügbar.
 Sei schnell und schnapp es dir.
