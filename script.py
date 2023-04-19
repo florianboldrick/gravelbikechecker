@@ -20,7 +20,7 @@ email_password = "bcktpcupbyrexsui"
 email_reciever = ["boldrick.isabel@gmail.com", "florian.boldrick@googlemail.com"]
 
 email_subject = "Dein Fahrrad ist jetzt verfügbar"
-email_body = f"""
+email_body = """
 Hi Isabel,
 
 dein gewünschtes Fahrrad 'Canyon GRIZL 7 AL' ist jetzt verfügbar.
